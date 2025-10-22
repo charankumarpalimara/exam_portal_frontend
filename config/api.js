@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API Base URL - Update this if backend port changes
-export const API_BASE_URL = 'http://localhost:8080/api';
+export const API_BASE_URL = 'https://exam-portal-backend-00ce.onrender.com/api';
 
 // Create axios instance with default config
 const api = axios.create({
