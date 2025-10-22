@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, BookOpen, LogOut } from 'lucide-react';
+import { Users, BookOpen, LogOut, Award } from 'lucide-react';
 import UserManagement from './UserManagement';
 import QuestionManagement from './QuestionManagement';
+import ResultManagement from './ResultManagement';
 import { fadeIn } from '../utils/motion';
 
 const AdminDashboard = () => {
@@ -70,12 +71,24 @@ const AdminDashboard = () => {
                 <BookOpen className="h-5 w-5 inline mr-2" />
                 Question Management
               </button>
+              <button
+                onClick={() => setActiveTab('results')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'results'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <Award className="h-5 w-5 inline mr-2" />
+                Exam Results
+              </button>
             </nav>
           </div>
 
           <div className="p-6">
             {activeTab === 'users' && <UserManagement />}
             {activeTab === 'questions' && <QuestionManagement />}
+            {activeTab === 'results' && <ResultManagement />}
           </div>
         </motion.div>
       </div>

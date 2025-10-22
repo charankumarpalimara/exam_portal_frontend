@@ -98,6 +98,17 @@ const ExamInterface = () => {
   };
 
   const saveAndNext = () => {
+    // Check if current question is answered
+    const currentQ = examQuestions[currentTab][currentQuestion];
+    const questionId = currentQ.id || currentQ._id;
+    const selectedAnswer = answers[questionId];
+    
+    if (!selectedAnswer) {
+      alert('Please select an answer before saving and proceeding to the next question.');
+      return;
+    }
+    
+    // Proceed to next question
     if (currentQuestion < 14) {
       setCurrentQuestion(prev => prev + 1);
     } else if (currentTab < 2) {
