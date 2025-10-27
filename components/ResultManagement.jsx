@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Eye, Trash2, TrendingUp, TrendingDown, Award, Clock } from 'lucide-react';
+import { Search, Eye, Trash2, TrendingUp, TrendingDown, Award, Clock, Edit } from 'lucide-react';
 import { fadeIn } from '../utils/motion';
 import examService from '../services/examService';
+import ResultEditModal from './ResultEditModal';
 
 const ResultManagement = () => {
   const [results, setResults] = useState([]);
@@ -10,6 +11,7 @@ const ResultManagement = () => {
   const [searchHallTicket, setSearchHallTicket] = useState('');
   const [searchName, setSearchName] = useState('');
   const [selectedResult, setSelectedResult] = useState(null);
+  const [editingResult, setEditingResult] = useState(null);
   const [statistics, setStatistics] = useState(null);
 
   useEffect(() => {
@@ -68,6 +70,29 @@ const ResultManagement = () => {
       console.error('Error fetching result details:', error);
       alert('Failed to load result details');
     }
+  };
+
+  const handleEditResult = async (resultId) => {
+    try {
+      const response = await examService.getResultById(resultId);
+      if (response.success) {
+        setEditingResult(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching result for editing:', error);
+      alert('Failed to load result for editing');
+    }
+  };
+
+  const handleResultUpdated = (updatedResult) => {
+    // Update the result in the list
+    setResults(prevResults => 
+      prevResults.map(result => 
+        result._id === updatedResult._id ? updatedResult : result
+      )
+    );
+    // Refresh statistics
+    fetchStatistics();
   };
 
   const handleDeleteResult = async (resultId) => {
@@ -280,6 +305,13 @@ const ResultManagement = () => {
                           <Eye className="h-5 w-5" />
                         </button>
                         <button
+                          onClick={() => handleEditResult(result._id)}
+                          className="text-green-600 hover:text-green-900 transition-colors"
+                          title="Edit Result"
+                        >
+                          <Edit className="h-5 w-5" />
+                        </button>
+                        <button
                           onClick={() => handleDeleteResult(result._id)}
                           className="text-red-600 hover:text-red-900 transition-colors"
                           title="Delete Result"
@@ -413,6 +445,15 @@ const ResultManagement = () => {
             </div>
           </motion.div>
         </div>
+      )}
+
+      {/* Result Edit Modal */}
+      {editingResult && (
+        <ResultEditModal
+          result={editingResult}
+          onClose={() => setEditingResult(null)}
+          onUpdate={handleResultUpdated}
+        />
       )}
     </div>
   );

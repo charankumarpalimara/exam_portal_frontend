@@ -51,6 +51,16 @@ const examService = {
     }
   },
 
+  // Update result (Admin)
+  updateResult: async (id, questions) => {
+    try {
+      const response = await api.put(`/exams/results/${id}`, { questions });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { success: false, message: 'Failed to update result' };
+    }
+  },
+
   // Get statistics (Admin)
   getStatistics: async () => {
     try {
