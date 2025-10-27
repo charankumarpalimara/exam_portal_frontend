@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { XCircle, Award, Home, CheckCircle } from 'lucide-react';
 import { fadeIn } from '../utils/motion';
 import examService from '../services/examService';
+import authService from '../services/authService';
 
 const ResultPage = () => {
   const navigate = useNavigate();
@@ -45,8 +46,23 @@ const ResultPage = () => {
   }, [currentUser, navigate]);
 
   const handleBackToDashboard = () => {
-    localStorage.removeItem('lastResultId');
-    navigate('/candidate');
+    const confirmed = window.confirm(
+      'Exam completed! Clicking OK will log you out and redirect to the login page for security purposes. Are you sure you want to continue?'
+    );
+    
+    if (confirmed) {
+      // Clear exam-related data
+      localStorage.removeItem('lastResultId');
+      
+      // Logout user and clear credentials
+      authService.logout();
+      
+      // Show logout message
+      alert('You have been successfully logged out. Thank you for completing the exam!');
+      
+      // Navigate to login page
+      navigate('/login');
+    }
   };
 
   if (!currentUser) {
@@ -188,7 +204,7 @@ const ResultPage = () => {
             className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mx-auto"
           >
             <Home className="h-5 w-5" />
-            Back to Dashboard
+            Complete Exam & Logout
           </button>
         </div>
       </motion.div>
